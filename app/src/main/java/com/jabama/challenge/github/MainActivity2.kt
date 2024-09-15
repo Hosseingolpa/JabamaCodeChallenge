@@ -9,7 +9,7 @@ import com.jabama.challenge.data.remote.auth.REDIRECT_URI
 import com.jabama.challenge.github.databinding.ActivityMainBinding
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity2 : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
