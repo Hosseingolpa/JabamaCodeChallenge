@@ -1,4 +1,4 @@
-package com.jabama.challenge.data.test
+package com.jabama.challenge.domain.test
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -13,7 +13,7 @@ import org.junit.runner.Description
 class CoroutinesTestRule(
     private val testDispatcher: TestDispatcher = StandardTestDispatcher()
 ) : TestWatcher() {
-    // todo (this file should remove and this module should use CoroutinesTestRule in Domain module)
+
     @OptIn(ExperimentalCoroutinesApi::class)
     private val testScope = TestCoroutineScope(testDispatcher)
 

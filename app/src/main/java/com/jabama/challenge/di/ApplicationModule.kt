@@ -1,11 +1,13 @@
 package com.jabama.challenge.di
 
-import com.jabama.challenge.data.di.authenticationModule
+import com.jabama.challenge.data.di.authenticationDataModule
 import com.jabama.challenge.data.di.cacheModule
 import com.jabama.challenge.data.di.networkModule
+import com.jabama.challenge.domain.di.authenticationDomainModule
 
 internal val appModules = listOf(
     networkModule,
-    authenticationModule,
+    authenticationDataModule,
+    authenticationDomainModule,
     cacheModule
 )

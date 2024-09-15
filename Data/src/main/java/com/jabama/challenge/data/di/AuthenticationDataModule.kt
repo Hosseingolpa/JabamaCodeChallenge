@@ -10,19 +10,19 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 
 
-val authenticationModule = module {
-    factory {
+val authenticationDataModule = module {
+    single {
         get<Retrofit>(named(RETROFIT))
             .create(AuthenticationService::class.java)
     }
 
-    factory<AuthenticationCache> {
+    single<AuthenticationCache> {
         AuthenticationCacheImpl(
             sharedPreferences = get()
         )
     }
 
-    factory<AuthenticationRepository> {
+    single<AuthenticationRepository> {
         AuthenticationRepositoryImpl(
             service = get(),
             cache = get()

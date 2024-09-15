@@ -35,7 +35,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     implementation 'com.squareup.retrofit2:retrofit:2.6.0'
-    implementation 'io.insert-koin:koin-android:3.0.1'
+    implementation 'io.insert-koin:koin-android:3.4.0'
     implementation 'androidx.preference:preference-ktx:1.1.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
@@ -45,6 +45,8 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     testImplementation "org.jetbrains.kotlin:kotlin-test:1.8.10"
     testImplementation "io.mockk:mockk:1.13.4"
+    testImplementation project(':Domain')
+    testImplementation project(':Domain')
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3"
 }
