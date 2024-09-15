@@ -1,8 +1,8 @@
-package com.jabama.challenge.network.oauth
+package com.jabama.challenge.data.model
 
 import com.google.gson.annotations.SerializedName
 
-data class RequestAccessToken(
+data class AccessTokenRequestDto(
     @SerializedName("client_id")
     var clientId: String,
 
