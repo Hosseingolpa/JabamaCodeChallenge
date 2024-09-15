@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import com.jabama.challenge.domain.repository.AuthenticationRepository
-import kotlinx.android.synthetic.main.login_uri_activity.token
+import com.jabama.challenge.github.databinding.LoginUriActivityBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -15,9 +15,12 @@ import org.koin.android.ext.android.inject
 class LoginUriActivity : Activity() {
     private val repository: AuthenticationRepository by inject()
 
+    private lateinit var binding: LoginUriActivityBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.login_uri_activity)
+        binding = LoginUriActivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
     }
 
     override fun onResume() {
@@ -34,7 +37,7 @@ class LoginUriActivity : Activity() {
 
                 accessTokenJob.invokeOnCompletion {
                     CoroutineScope(Dispatchers.Main).launch {
-                        token.text = repository.getAccessToken()?: ""
+                        binding.token.text = repository.getAccessToken()?: ""
                         this.cancel()
                         accessTokenJob.cancelAndJoin()
                     }

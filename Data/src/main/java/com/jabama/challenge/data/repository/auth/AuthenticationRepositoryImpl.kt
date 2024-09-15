@@ -17,7 +17,7 @@ class AuthenticationRepositoryImpl (
 ): AuthenticationRepository {
     override suspend fun fetchNewAccessToken(code: String): AccessToken {
         val accessTokenRequest = getAccessTokenRequestDto(code)
-        val accessTokenResponse = service.accessToken(
+        val accessTokenResponse = service.fetchNewAccessToken(
             accessTokenRequest = accessTokenRequest
         )
 

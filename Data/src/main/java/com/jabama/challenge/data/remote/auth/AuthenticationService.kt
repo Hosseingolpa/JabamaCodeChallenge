@@ -9,5 +9,5 @@ import retrofit2.http.POST
 interface AuthenticationService {
     @Headers("Accept:application/json")
     @POST("https://github.com/login/oauth/access_token")
-    suspend fun accessToken(@Body accessTokenRequest: AccessTokenRequestDto): AccessTokenResponseDto
+    suspend fun fetchNewAccessToken(@Body accessTokenRequest: AccessTokenRequestDto): AccessTokenResponseDto
 }
