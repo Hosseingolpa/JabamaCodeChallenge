@@ -25,8 +25,8 @@ class LoginUriActivity : Activity() {
         val intent = intent
         if (Intent.ACTION_VIEW == intent.action) {
             val uri = intent.data
-            val code = uri?.getQueryParameter("code") ?: ""
-            code.takeIf { it.isNotEmpty() }?.let { code ->
+            val codeParameter = uri?.getQueryParameter("code") ?: ""
+            codeParameter.takeIf { it.isNotEmpty() }?.let { code ->
                 val accessTokenJob = CoroutineScope(Dispatchers.IO).launch {
                     val response = accessTokenDataSource.accessToken(
                         RequestAccessToken(

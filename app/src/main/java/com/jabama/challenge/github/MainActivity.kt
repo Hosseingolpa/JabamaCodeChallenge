@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        authorize.setOnClickListener { view ->
+        authorize.setOnClickListener { _ ->
             val url = "https://github.com/login/oauth/authorize?client_id=$CLIENT_ID&redirect_uri=$REDIRECT_URI&scope=repo user&state=0"
             val i = Intent(Intent.ACTION_VIEW)
             i.data = Uri.parse(url)
