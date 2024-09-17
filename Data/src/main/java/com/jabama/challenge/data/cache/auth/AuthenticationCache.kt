@@ -1,6 +1,5 @@
 package com.jabama.challenge.data.cache.auth
 
-interface AuthenticationCache {
+interface AuthenticationCache: AccessTokenAuthenticationCache {
     fun saveAccessToken(value: String)
-    fun getAccessToken(): String?
 }

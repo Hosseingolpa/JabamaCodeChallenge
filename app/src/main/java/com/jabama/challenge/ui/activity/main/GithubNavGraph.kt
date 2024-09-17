@@ -36,11 +36,9 @@ fun GithubNavGraph(
         startDestination = startDestination
     ) {
 
-        splashScreenComposable(
-            navAction = navAction,
-        )
+        splashScreenComposable(navAction = navAction)
 
-        authenticationScreenComposable()
+        authenticationScreenComposable(navAction = navAction)
 
         searchScreenComposable()
 
@@ -68,13 +66,18 @@ fun NavGraphBuilder.splashScreenComposable(
 }
 
 
-fun NavGraphBuilder.authenticationScreenComposable() {
+fun NavGraphBuilder.authenticationScreenComposable(
+    navAction: GithubNavigationActions
+) {
     composable(route = GithubDestinationScreens.AUTHENTICATION_ROUTE) {
         val viewModel = koinViewModel<AuthenticationViewModel>()
         val state by viewModel.uiState.collectAsState()
         AuthenticationScreen(
             state = state,
-            onLoginClick = viewModel::onLoginClick
+            onLoginClick = viewModel::onLoginClick,
+            navigateToSearchScreen = {
+                navAction.navigateToSearch()
+            }
         )
     }
 }

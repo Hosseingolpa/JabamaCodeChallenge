@@ -1,4 +1,4 @@
-package com.jabama.challenge.data.model
+package com.jabama.challenge.data.model.auth
 
 import com.google.gson.annotations.SerializedName
 

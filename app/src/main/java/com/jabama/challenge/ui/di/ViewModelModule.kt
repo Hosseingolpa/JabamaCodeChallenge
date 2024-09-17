@@ -9,16 +9,21 @@ import org.koin.dsl.module
 val viewModelModule = module {
 
     viewModel {
-        SplashViewModel()
+        SplashViewModel(
+            isUserAuthenticatedByValidationUseCase = get()
+        )
     }
 
     viewModel {
-        AuthenticationViewModel()
+        AuthenticationViewModel(
+            getAuthenticatedFlowUseCase = get()
+        )
     }
 
     viewModel {
         LoginSucceedViewModel(
-            fetchNewAccessTokenUseCase = get()
+            fetchNewAccessTokenUseCase = get(),
+            updateIsAuthenticatedUseCase = get()
         )
     }
 }
