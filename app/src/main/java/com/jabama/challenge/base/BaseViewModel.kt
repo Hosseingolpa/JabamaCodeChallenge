@@ -3,6 +3,7 @@ package com.jabama.challenge.base
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -10,7 +11,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-abstract class BaseViewModel<STATE> : ViewModel() {
+abstract class BaseViewModel<STATE>(
+    private val externalIoDispatcher: CoroutineDispatcher? = null,
+    private val externalScope: CoroutineScope? = null
+) : ViewModel() {
+
+    protected val coroutineScope: CoroutineScope
+        get() = externalScope?: viewModelScope
+
+    protected val ioDispatcher: CoroutineDispatcher
+        get() = externalIoDispatcher?: Dispatchers.IO
 
     private val initialState: STATE by lazy { createInitialState() }
 
@@ -23,16 +33,16 @@ abstract class BaseViewModel<STATE> : ViewModel() {
     val uiState = _uiState.asStateFlow()
 
     protected fun <T : Any> useCaseAction(
-        scope: CoroutineScope = viewModelScope,
+        scope: CoroutineScope = coroutineScope,
         onLoadingAction: suspend () -> Unit = {},
-        action: suspend () -> Result<T>,
+        action: suspend () -> T,
         onSuccessAction: suspend (T) -> Unit = {},
         onErrorAction: (String) -> Unit = {},
     ): Job {
-        return scope.launch(Dispatchers.IO) {
+        return scope.launch(ioDispatcher) {
             try {
                 onLoadingAction()
-                val result = action()
+                val result = runCatching { action() }
                 val resultValue = result.getOrNull()
                 when {
                     result.isFailure -> {

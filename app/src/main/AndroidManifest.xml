@@ -23,7 +23,7 @@
         </activity>
 
         <activity
-            android:name="com.jabama.challenge.github.LoginUriActivity"
+            android:name="com.jabama.challenge.ui.activity.loginsucceeded.LoginSucceededActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
