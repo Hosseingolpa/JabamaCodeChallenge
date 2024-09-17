@@ -15,6 +15,7 @@ import com.jabama.challenge.ui.navigation.GithubNavigationActions
 import com.jabama.challenge.ui.screen.auth.AuthenticationScreen
 import com.jabama.challenge.ui.screen.auth.AuthenticationViewModel
 import com.jabama.challenge.ui.screen.search.SearchScreen
+import com.jabama.challenge.ui.screen.search.SearchViewModel
 import com.jabama.challenge.ui.screen.splash.SplashScreen
 import com.jabama.challenge.ui.screen.splash.SplashViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -40,7 +41,7 @@ fun GithubNavGraph(
 
         authenticationScreenComposable(navAction = navAction)
 
-        searchScreenComposable()
+        searchScreenComposable(navAction = navAction)
 
     }
 }
@@ -82,8 +83,19 @@ fun NavGraphBuilder.authenticationScreenComposable(
     }
 }
 
-fun NavGraphBuilder.searchScreenComposable() {
+fun NavGraphBuilder.searchScreenComposable(
+    navAction: GithubNavigationActions
+) {
     composable(route = GithubDestinationScreens.SEARCH_ROUTE) {
-        SearchScreen()
+        val viewModel = koinViewModel<SearchViewModel>()
+        val state by viewModel.uiState.collectAsState()
+        SearchScreen(
+            state = state,
+            onQueryChange = viewModel::onQueryChange,
+            onRetryClick = viewModel::onRetryClick,
+            navigateToAuthenticationScreen = {
+                navAction.navigateToAuthentication()
+            }
+        )
     }
 }

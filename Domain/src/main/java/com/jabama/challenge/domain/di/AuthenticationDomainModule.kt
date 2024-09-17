@@ -5,6 +5,7 @@ import com.jabama.challenge.domain.usecase.auth.FetchNewAccessTokenUseCase
 import com.jabama.challenge.domain.usecase.auth.GetAccessTokenUseCase
 import com.jabama.challenge.domain.usecase.auth.GetIsAuthenticatedFlowUseCase
 import com.jabama.challenge.domain.usecase.auth.UpdateIsAuthenticatedUseCase
+import com.jabama.challenge.domain.usecase.search.GetRepositoriesUseCase
 import org.koin.dsl.module
 
 
@@ -25,7 +26,7 @@ val authenticationDomainModule = module {
     factory {
         IsUserAuthenticatedByValidationUseCase(
             authenticationRepository = get(),
-            searchRepository = get()
+            getRepositoriesUseCase = get()
         )
     }
 
@@ -38,6 +39,12 @@ val authenticationDomainModule = module {
     factory {
         GetIsAuthenticatedFlowUseCase(
             authenticationRepository = get()
+        )
+    }
+
+    factory {
+        GetRepositoriesUseCase(
+            searchRepository = get()
         )
     }
 

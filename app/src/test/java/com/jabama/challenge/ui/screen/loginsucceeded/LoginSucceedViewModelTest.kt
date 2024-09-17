@@ -1,7 +1,7 @@
 package com.jabama.challenge.ui.screen.loginsucceeded
 
 import com.jabama.challenge.mock.MockUtil
-import com.jabama.challenge.domain.mock.accessTokenMock
+import com.jabama.challenge.mock.accessTokenMock
 import com.jabama.challenge.domain.model.auth.AccessToken
 import com.jabama.challenge.domain.test.CoroutinesTestRule
 import com.jabama.challenge.domain.usecase.auth.FetchNewAccessTokenUseCase

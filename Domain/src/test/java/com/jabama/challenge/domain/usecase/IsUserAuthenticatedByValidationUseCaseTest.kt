@@ -1,9 +1,11 @@
 package com.jabama.challenge.domain.usecase
 
 import com.jabama.challenge.domain.mock.MockUtil
+import com.jabama.challenge.domain.mock.repositoryMock
+import com.jabama.challenge.domain.model.search.Repository
 import com.jabama.challenge.domain.repository.AuthenticationRepository
-import com.jabama.challenge.domain.repository.SearchRepository
 import com.jabama.challenge.domain.test.CoroutinesTestRule
+import com.jabama.challenge.domain.usecase.search.GetRepositoriesUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every
@@ -23,7 +25,7 @@ class IsUserAuthenticatedByValidationUseCaseTest {
     val coroutinesTestRule = CoroutinesTestRule()
 
     @RelaxedMockK
-    lateinit var searchRepository: SearchRepository
+    lateinit var getRepositoriesUseCase: GetRepositoriesUseCase
 
     @RelaxedMockK
     lateinit var authenticationRepository: AuthenticationRepository
@@ -40,7 +42,7 @@ class IsUserAuthenticatedByValidationUseCaseTest {
 
     private fun createUseCase(): IsUserAuthenticatedByValidationUseCase {
         return IsUserAuthenticatedByValidationUseCase(
-            searchRepository = searchRepository,
+            getRepositoriesUseCase = getRepositoriesUseCase,
             authenticationRepository = authenticationRepository
         )
     }
@@ -70,11 +72,7 @@ class IsUserAuthenticatedByValidationUseCaseTest {
     fun `when getAccessToken return token and searchRepositories throw exception, then use case return false`() = runTest {
         val fakeAccessToken: String = MockUtil.getRandomString()
         mockGetAccessToken(returnValue = fakeAccessToken)
-        coEvery {
-            searchRepository.searchRepositories(query = any())
-        } coAnswers {
-            throw Exception()
-        }
+        mockErrorGetRepositoriesUseCase()
         val useCase = createUseCase()
         val result = useCase.execute()
 
@@ -86,11 +84,7 @@ class IsUserAuthenticatedByValidationUseCaseTest {
     fun `when getAccessToken return token and searchRepositories throw exception, then updateIsAuthenticated should call with false value`() = runTest {
         val fakeAccessToken: String = MockUtil.getRandomString()
         mockGetAccessToken(returnValue = fakeAccessToken)
-        coEvery {
-            searchRepository.searchRepositories(query = any())
-        } coAnswers {
-            throw Exception()
-        }
+        mockErrorGetRepositoriesUseCase()
         val useCase = createUseCase()
         useCase.execute()
 
@@ -100,8 +94,9 @@ class IsUserAuthenticatedByValidationUseCaseTest {
     @Test
     fun `when getAccessToken return token and searchRepositories call successfully, then use case return true`() = runTest {
         val fakeAccessToken: String = MockUtil.getRandomString()
+        val fakeRepositories = listOf(repositoryMock)
         mockGetAccessToken(returnValue = fakeAccessToken)
-        coEvery { searchRepository.searchRepositories(query = any()) } coAnswers {}
+        mockGetRepositoriesUseCase(returnValue = fakeRepositories)
         val useCase = createUseCase()
         val result = useCase.execute()
 
@@ -111,8 +106,9 @@ class IsUserAuthenticatedByValidationUseCaseTest {
     @Test
     fun `when getAccessToken return token and searchRepositories call successfully, then updateIsAuthenticated should call with true value`() = runTest {
         val fakeAccessToken: String = MockUtil.getRandomString()
+        val fakeRepositories = listOf(repositoryMock)
         mockGetAccessToken(returnValue = fakeAccessToken)
-        coEvery { searchRepository.searchRepositories(query = any()) } coAnswers {}
+        mockGetRepositoriesUseCase(returnValue = fakeRepositories)
         val useCase = createUseCase()
         useCase.execute()
 
@@ -121,6 +117,22 @@ class IsUserAuthenticatedByValidationUseCaseTest {
 
     private fun mockGetAccessToken(returnValue: String?) {
         every { authenticationRepository.getAccessToken() } returns returnValue
+    }
+
+    private fun mockErrorGetRepositoriesUseCase(){
+        coEvery {
+            getRepositoriesUseCase.execute(any())
+        } coAnswers {
+            throw Exception()
+        }
+    }
+
+    private fun mockGetRepositoriesUseCase(returnValue: List<Repository>) {
+        coEvery {
+            getRepositoriesUseCase.execute(any())
+        } coAnswers {
+            returnValue
+        }
     }
 
 }

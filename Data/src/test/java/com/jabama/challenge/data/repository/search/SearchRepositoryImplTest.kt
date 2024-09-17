@@ -1,8 +1,10 @@
 package com.jabama.challenge.data.repository.search
 
 import com.jabama.challenge.data.mock.MockUtil
+import com.jabama.challenge.data.mock.repositoryDtoMock
 import com.jabama.challenge.data.mock.searchRepositoriesResponseDtoMock
 import com.jabama.challenge.data.remote.search.SearchService
+import com.jabama.challenge.data.repository.search.mapper.mapToRepository
 import com.jabama.challenge.data.test.CoroutinesTestRule
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -13,6 +15,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import kotlin.test.assertEquals
 
 class SearchRepositoryImplTest {
 
@@ -51,12 +54,16 @@ class SearchRepositoryImplTest {
     @Test
     fun `when searchRepositories call and service return value, then repository not return anything and no error should not happen`() = runTest {
         val fakeQuery = MockUtil.getRandomString()
-        val returnValue = searchRepositoriesResponseDtoMock
+        val returnValue = searchRepositoriesResponseDtoMock.copy(
+            repositories = listOf(repositoryDtoMock)
+        )
         coEvery { searchService.searchRepositories(query = fakeQuery) } coAnswers {
             returnValue
         }
         val repository = createRepository()
-        repository.searchRepositories(query = fakeQuery)
+        val result = repository.searchRepositories(query = fakeQuery)
+        val expectedValue = returnValue.repositories.map { it.mapToRepository() }
+        assertEquals(expectedValue, result)
     }
 
 

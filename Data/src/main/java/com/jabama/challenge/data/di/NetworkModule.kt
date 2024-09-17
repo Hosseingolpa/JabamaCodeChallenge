@@ -35,8 +35,8 @@ val networkModule = module {
             .readTimeout(get(named(READ_TIMEOUT)), TimeUnit.MILLISECONDS)
             .writeTimeout(get(named(WRITE_TIMEOUT)), TimeUnit.MILLISECONDS)
             .connectTimeout(get(named(CONNECTION_TIMEOUT)), TimeUnit.MILLISECONDS)
-            .addInterceptor(get(named(LOG_INTERCEPTOR)))
-            .addInterceptor(get(named(AUTHENTICATION_INTERCEPTOR)))
+            .addInterceptor(get<Interceptor>(named(LOG_INTERCEPTOR)))
+            .addInterceptor(get<Interceptor>(named(AUTHENTICATION_INTERCEPTOR)))
             .build()
     }
 

@@ -2,10 +2,11 @@ package com.jabama.challenge.domain.usecase
 
 import com.jabama.challenge.domain.repository.AuthenticationRepository
 import com.jabama.challenge.domain.repository.SearchRepository
+import com.jabama.challenge.domain.usecase.search.GetRepositoriesUseCase
 
 class IsUserAuthenticatedByValidationUseCase(
     private val authenticationRepository: AuthenticationRepository,
-    private val searchRepository: SearchRepository,
+    private val getRepositoriesUseCase: GetRepositoriesUseCase,
 ) {
     suspend fun execute(): Boolean {
         val accessToken = authenticationRepository.getAccessToken()
@@ -16,7 +17,7 @@ class IsUserAuthenticatedByValidationUseCase(
 
     private suspend fun isTokenValid(): Boolean {
         try {
-            searchRepository.searchRepositories(query = "a")
+            getRepositoriesUseCase.execute(query = "a")
             return true
         } catch (e: Exception) {
             return false
