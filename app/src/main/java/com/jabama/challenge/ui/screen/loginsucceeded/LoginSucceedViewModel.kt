@@ -1,13 +1,15 @@
 package com.jabama.challenge.ui.screen.loginsucceeded
 
 import com.jabama.challenge.base.BaseViewModel
-import com.jabama.challenge.domain.usecase.FetchNewAccessTokenUseCase
+import com.jabama.challenge.domain.usecase.auth.FetchNewAccessTokenUseCase
+import com.jabama.challenge.domain.usecase.auth.UpdateIsAuthenticatedUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.update
 
 class LoginSucceedViewModel(
     private val fetchNewAccessTokenUseCase: FetchNewAccessTokenUseCase,
+    private val updateIsAuthenticatedUseCase: UpdateIsAuthenticatedUseCase,
     externalIoDispatcher: CoroutineDispatcher? = null,
     externalScope: CoroutineScope? = null
 ) : BaseViewModel<LoginSucceedUiState>(
@@ -24,10 +26,16 @@ class LoginSucceedViewModel(
             },
             onSuccessAction = {
                 _uiState.update { it.copy(accessTokenState = AccessTokenState.Success) }
+                updateIsAuthenticated(value = true)
             },
             onErrorAction = {
                 _uiState.update { it.copy(accessTokenState = AccessTokenState.Error) }
+                updateIsAuthenticated(value = false)
             }
         )
+    }
+
+    private fun updateIsAuthenticated(value: Boolean) {
+        updateIsAuthenticatedUseCase.execute(value)
     }
 }

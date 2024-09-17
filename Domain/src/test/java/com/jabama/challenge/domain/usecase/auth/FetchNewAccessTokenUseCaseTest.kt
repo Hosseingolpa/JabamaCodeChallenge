@@ -1,4 +1,4 @@
-package com.jabama.challenge.domain.usecase
+package com.jabama.challenge.domain.usecase.auth
 
 import com.jabama.challenge.domain.mock.MockUtil
 import com.jabama.challenge.domain.mock.accessTokenMock

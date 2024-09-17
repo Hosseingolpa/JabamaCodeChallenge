@@ -36,8 +36,8 @@ import com.jabama.challenge.ui.theme.GithubTheme
 @Composable
 fun AuthenticationScreen(
     state: AuthenticationUiState,
-
     onLoginClick: () -> Unit,
+    navigateToSearchScreen: () -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -53,6 +53,11 @@ fun AuthenticationScreen(
     HandleNavigateToScreenByState(
         isEligibleForNavigation = state.shouldNavigateToAuthenticationWithWeb,
         navigateToScreen = ::navigateToAuthenticationWithWeb
+    )
+
+    HandleNavigateToScreenByState(
+        isEligibleForNavigation = state.shouldNavigateToSearchScreen,
+        navigateToScreen = navigateToSearchScreen
     )
 
     Column(
@@ -103,7 +108,8 @@ private fun AuthenticationScreenPreview() {
     GithubTheme {
         AuthenticationScreen(
             state = AuthenticationUiState(),
-            onLoginClick = {}
+            onLoginClick = {},
+            navigateToSearchScreen = {}
         )
     }
 }

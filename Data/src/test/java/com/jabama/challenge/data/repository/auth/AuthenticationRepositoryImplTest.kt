@@ -48,47 +48,50 @@ class AuthenticationRepositoryImplTest {
     }
 
     @Test(expected = Exception::class)
-    fun `when fetchNewAccessToken call and service throw exception, then should throw exception`() = runTest {
-        coEvery {
-            authenticationService.fetchNewAccessToken(any())
-        } coAnswers {
-            throw Exception()
-        }
+    fun `when fetchNewAccessToken call and service throw exception, then should throw exception`() =
+        runTest {
+            coEvery {
+                authenticationService.fetchNewAccessToken(any())
+            } coAnswers {
+                throw Exception()
+            }
 
-        val repository = createRepository()
-        repository.fetchNewAccessToken(code = "")
-    }
+            val repository = createRepository()
+            repository.fetchNewAccessToken(code = "")
+        }
 
     @Test
-    fun `when fetchNewAccessToken call and service return access token response, then should access token that mapped`() = runTest {
-        val fakeAccessTokenResponse = accessTokenResponseDtoMock
-        coEvery {
-            authenticationService.fetchNewAccessToken(any())
-        } coAnswers {
-            fakeAccessTokenResponse
+    fun `when fetchNewAccessToken call and service return access token response, then should access token that mapped`() =
+        runTest {
+            val fakeAccessTokenResponse = accessTokenResponseDtoMock
+            coEvery {
+                authenticationService.fetchNewAccessToken(any())
+            } coAnswers {
+                fakeAccessTokenResponse
+            }
+            mockSaveAccessTokenFromCache(inputValue = fakeAccessTokenResponse.accessToken)
+
+            val repository = createRepository()
+            val result = repository.fetchNewAccessToken(code = "")
+
+            assertEquals(fakeAccessTokenResponse.mapToAccessToken(), result)
         }
-        mockSaveAccessTokenFromCache(inputValue = fakeAccessTokenResponse.accessToken)
-
-        val repository = createRepository()
-        val result = repository.fetchNewAccessToken(code = "")
-
-        assertEquals(fakeAccessTokenResponse.mapToAccessToken(), result)
-    }
 
     @Test
-    fun `when fetchNewAccessToken call and service return access token response, then should saveAccessToken call`() = runTest {
-        val fakeAccessTokenResponse = accessTokenResponseDtoMock
-        coEvery {
-            authenticationService.fetchNewAccessToken(any())
-        } coAnswers {
-            fakeAccessTokenResponse
+    fun `when fetchNewAccessToken call and service return access token response, then should saveAccessToken call`() =
+        runTest {
+            val fakeAccessTokenResponse = accessTokenResponseDtoMock
+            coEvery {
+                authenticationService.fetchNewAccessToken(any())
+            } coAnswers {
+                fakeAccessTokenResponse
+            }
+
+            val repository = createRepository()
+            repository.fetchNewAccessToken(code = "")
+
+            verify { authenticationCache.saveAccessToken(value = fakeAccessTokenResponse.accessToken) }
         }
-
-        val repository = createRepository()
-        repository.fetchNewAccessToken(code = "")
-
-        verify { authenticationCache.saveAccessToken(value = fakeAccessTokenResponse.accessToken) }
-    }
 
     @Test
     fun `when getAccessToken call and cache getAccessToken return null, then should return null`() {
@@ -108,6 +111,30 @@ class AuthenticationRepositoryImplTest {
 
         val result = repository.getAccessToken()
         assertEquals(fakeToken, result)
+    }
+
+    @Test
+    fun `when repository created, then isAuthenticated should return false`() {
+        val repository = createRepository()
+        assertEquals(false, repository.getIsAuthenticatedFlow().value)
+    }
+
+
+    @Test
+    fun `when updateIsAuthenticated with true value,then isAuthenticated should return true`() {
+        val isAuthenticated = true
+        val repository = createRepository()
+        repository.updateIsAuthenticated(value = isAuthenticated)
+        assertEquals(isAuthenticated, repository.getIsAuthenticatedFlow().value)
+    }
+
+
+    @Test
+    fun `when updateIsAuthenticated with true false,then isAuthenticated should return false`() {
+        val isAuthenticated = false
+        val repository = createRepository()
+        repository.updateIsAuthenticated(value = isAuthenticated)
+        assertEquals(isAuthenticated, repository.getIsAuthenticatedFlow().value)
     }
 
     private fun mockSaveAccessTokenFromCache(inputValue: String) {

@@ -10,4 +10,11 @@
     <string name="login_failed">Login failed</string>
     <string name="back">Back</string>
     <string name="go_to_search">Go to search</string>
+    <string name="search_repository_name">Search repository name</string>
+    <string name="try_again">Try again</string>
+    <string name="loading">Loading</string>
+    <string name="please_search_repository">Please search repository</string>
+    <string name="no_repository_found">Please search repository</string>
+    <string name="name_repository">Name: %1$s</string>
+    <string name="full_name_repository">Full name: %1$s</string>
 </resources>

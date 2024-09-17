@@ -1,17 +1,26 @@
 package com.jabama.challenge.ui.screen.splash
 
-import androidx.lifecycle.viewModelScope
 import com.jabama.challenge.base.BaseViewModel
+import com.jabama.challenge.domain.usecase.IsUserAuthenticatedByValidationUseCase
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class SplashViewModel(): BaseViewModel<SplashUiState>() {
+class SplashViewModel(
+    private val isUserAuthenticatedByValidationUseCase: IsUserAuthenticatedByValidationUseCase,
+    externalIoDispatcher: CoroutineDispatcher? = null,
+    externalScope: CoroutineScope? = null
+): BaseViewModel<SplashUiState>(
+    externalIoDispatcher = externalIoDispatcher,
+    externalScope = externalScope
+) {
 
     override fun createInitialState(): SplashUiState = SplashUiState()
 
     companion object {
-        private const val SPLASH_WAITING_TIME = 4000L
+        const val SPLASH_WAITING_TIME = 3000L
     }
 
     init {
@@ -19,13 +28,13 @@ class SplashViewModel(): BaseViewModel<SplashUiState>() {
     }
 
     private fun startTimerForNavigate() {
-        viewModelScope.launch {
+        coroutineScope.launch {
             delay(SPLASH_WAITING_TIME)
             checkNavigateToWhichScreen()
         }
     }
 
-    private fun checkNavigateToWhichScreen() {
+    private suspend fun checkNavigateToWhichScreen() {
         if (isAuthenticated()) {
             _uiState.update { it.copy(shouldNavigateToSearchScreen = true) }
         } else {
@@ -33,7 +42,7 @@ class SplashViewModel(): BaseViewModel<SplashUiState>() {
         }
     }
 
-    private fun isAuthenticated(): Boolean {
-        return false
+    private suspend fun isAuthenticated(): Boolean {
+        return isUserAuthenticatedByValidationUseCase.execute()
     }
 }
